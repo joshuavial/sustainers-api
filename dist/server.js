@@ -1,11 +1,9 @@
-var app = require('./app')
-var env = process.argv[2]
+var App = require('./app')
+var mongoose = require('mongoose')
 
-if (env == 'test') {
-  app.set('port', process.env.PORT || 8800);
-} else {
-  app.set('port', process.env.PORT || 8000);
-}
-var server = app.listen(app.get('port'), function () {
+var connection = mongoose.createConnection('mongodb://localhost/sustainers-api-dev')
+var app = new App(connection)
+
+var server = app.express.listen(3000, function () {
   console.log(server.address().port)
 })
