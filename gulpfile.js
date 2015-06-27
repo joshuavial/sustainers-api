@@ -3,11 +3,16 @@ var sourcemaps = require('gulp-sourcemaps')
 var babel = require('gulp-babel')
 var concat = require('gulp-concat')
 var exec = require('child_process').exec
+// var webserver = require('gulp-webserver')
+
+var sourceFiles = 'src/**/*.js'
+var testFiles = 'test/**/*.js'
+var standardFiles = 'test/* src/* gulpfile.js'
 
 gulp.task('default', ['build', 'test'])
 
 gulp.task('build', function () {
-  return gulp.src('src/**/*.js')
+  return gulp.src(sourceFiles)
     .pipe(sourcemaps.init())
     .pipe(babel())
     .pipe(concat('server.js'))
@@ -16,14 +21,12 @@ gulp.task('build', function () {
 })
 
 gulp.task('watch', function () {
-  gulp.watch('./src/**/*.js', ['build'])
-  gulp.watch(['./src/**/*.js', './test/**/*.js'], ['test'])
+  gulp.watch([sourceFiles, testFiles], ['build', 'test'])
 })
 
 gulp.task('test', function () {
-  exec('mocha --compilers js:babel/register', function (err, stdout, stderr) {
-    if (err) {return err}
-    if (stderr) {console.log(stderr)}
+  exec('./node_modules/standard/bin/cmd.js ' + standardFiles + ' && mocha --compilers js:babel/register', function (err, stdout, stderr) {
     console.log(stdout)
+    if (err) {console.log(stderr)}
   })
 })

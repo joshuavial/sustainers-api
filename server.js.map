@@ -1,1 +1,1 @@
-{"version":3,"sources":["test.js"],"names":[],"mappings":";;AAAA,IAAI,IAAI,GAAG,CAAC,CAAA;AACZ,OAAO,CAAC,GAAG,YAAU,IAAI,CAAG,CAAA","file":"server.js","sourcesContent":["let test = 3\nconsole.log(`hello ${test}`)\n"],"sourceRoot":"/source/"}
+{"version":3,"sources":["test.js"],"names":[],"mappings":";;AAAA,IAAI,IAAI,GAAG,CAAC,CAAA;AACZ,IAAI,EAAE,EAAE,EACP;AACD,OAAO,CAAC,GAAG,YAAU,IAAI,CAAG,CAAA","file":"server.js","sourcesContent":["let test = 3\nif ('') {\n}\nconsole.log(`hello ${test}`)\n"],"sourceRoot":"/source/"}
