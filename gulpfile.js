@@ -3,7 +3,6 @@ var sourcemaps = require('gulp-sourcemaps')
 var babel = require('gulp-babel')
 var concat = require('gulp-concat')
 var exec = require('child_process').exec
-// var webserver = require('gulp-webserver')
 
 var sourceFiles = 'src/**/*.js'
 var testFiles = 'test/**/*.js'
@@ -15,9 +14,13 @@ gulp.task('build', function () {
   return gulp.src(sourceFiles)
     .pipe(sourcemaps.init())
     .pipe(babel())
-    .pipe(concat('server.js'))
+    .pipe(concat('app.js'))
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('.'))
+    .pipe(gulp.dest('dist'))
+})
+
+gulp.task('serve', function () {
+  exec('./node_modules/nodemon/bin/nodemon.js ./dist/server.js')
 })
 
 gulp.task('watch', function () {
