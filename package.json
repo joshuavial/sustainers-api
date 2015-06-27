@@ -1,0 +1,32 @@
+{
+  "name": "sustainers-api",
+  "version": "0.0.0",
+  "description": "HTTP api for providing information of sustain transactions",
+  "main": "server.js",
+  "scripts": {
+    "test": "gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joshuavial/sustainers-api"
+  },
+  "keywords": [
+    "sustain",
+    "bitcoin",
+    "blockchain"
+  ],
+  "author": "Joshua Vial <joshua@enspiral.com> (http://joshuavial.com/)",
+  "license": "Unlicense",
+  "bugs": {
+    "url": "https://github.com/joshuavial/sustainers-api/issues"
+  },
+  "homepage": "https://github.com/joshuavial/sustainers-api",
+  "devDependencies": {
+    "babel": "^5.6.14",
+    "gulp": "^3.9.0",
+    "gulp-babel": "^5.1.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-sourcemaps": "^1.5.2",
+    "gulp-watch": "^4.2.4"
+  }
+}
