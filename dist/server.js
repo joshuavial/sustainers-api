@@ -1,6 +1,6 @@
 var app = require('./app')
+var env = process.argv[2]
 
-env = process.argv[2]
 if (env == 'test') {
   app.set('port', process.env.PORT || 8800);
 } else {

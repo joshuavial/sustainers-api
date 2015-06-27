@@ -1,8 +1,12 @@
 const express = require('express')
-const app = express()
+const AddressController = require('./controllers/addresses')
 
-app.get('/', (req, res) =>
-  res.send('Hello')
-)
+class App {
+  constructor (connection) {
+    this.connection = connection
+    this.express = express()
+    AddressController.registerHandlers('/addresses', this)
+  }
+}
 
-module.exports = app
+module.exports = App
