@@ -1,6 +1,6 @@
 {
   "name": "sustainers-api",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "HTTP api for providing information of sustain transactions",
   "main": "server.js",
   "scripts": {
