@@ -18,18 +18,13 @@ class AddressesController {
     let params = parseParams(req.body)
     if (!paramsValid(params)) { return(res.sendStatus(400)) }
     if (!signatureValid(params)) { return(res.sendStatus(401)) }
-
-    this.app.modelInstance('address', params).save()
-    res.sendStatus(200)
+    
+    checkForGreaterNonce(this.app.model('address'), params, (nonceInvalid) => {
+      if(nonceInvalid) { return(res.sendStatus(401)) }
+      this.app.modelInstance('address', params).save()
+      res.sendStatus(200)
+    })
   }
-}
-
-function signatureValid(params) {
-  return(Message(params.nonce.toString()).verify(params.address, params.signature))
-}
-
-function paramsValid(params) {
-  return(params.address && params.nonce && params.signature)
 }
 
 function parseParams(body) {
@@ -37,6 +32,20 @@ function parseParams(body) {
     address: body.address,
     nonce: body.nonce,
     signature: body.signature
+  })
+}
+
+function paramsValid(params) {
+  return(params.address && params.nonce && params.signature)
+}
+
+function signatureValid(params) {
+  return(Message(params.nonce.toString()).verify(params.address, params.signature))
+}
+
+function checkForGreaterNonce(Address, params, done) {
+  Address.findOne({nonce: {$gte: params.nonce}}, (err, res) => {
+    done(res != null)
   })
 }
 

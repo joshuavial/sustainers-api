@@ -17,6 +17,8 @@ var AddressesController = (function () {
   _createClass(AddressesController, [{
     key: 'create',
     value: function create(req, res) {
+      var _this = this;
+
       var params = parseParams(req.body);
       if (!paramsValid(params)) {
         return res.sendStatus(400);
@@ -25,8 +27,13 @@ var AddressesController = (function () {
         return res.sendStatus(401);
       }
 
-      this.app.modelInstance('address', params).save();
-      res.sendStatus(200);
+      checkForGreaterNonce(this.app.model('address'), params, function (nonceInvalid) {
+        if (nonceInvalid) {
+          return res.sendStatus(401);
+        }
+        _this.app.modelInstance('address', params).save();
+        res.sendStatus(200);
+      });
     }
   }], [{
     key: 'registerHandlers',
@@ -42,20 +49,26 @@ var AddressesController = (function () {
   return AddressesController;
 })();
 
-function signatureValid(params) {
-  return Message(params.nonce.toString()).verify(params.address, params.signature);
-}
-
-function paramsValid(params) {
-  return params.address && params.nonce && params.signature;
-}
-
 function parseParams(body) {
   return {
     address: body.address,
     nonce: body.nonce,
     signature: body.signature
   };
+}
+
+function paramsValid(params) {
+  return params.address && params.nonce && params.signature;
+}
+
+function signatureValid(params) {
+  return Message(params.nonce.toString()).verify(params.address, params.signature);
+}
+
+function checkForGreaterNonce(Address, params, done) {
+  Address.findOne({ nonce: { $gte: params.nonce } }, function (err, res) {
+    done(res != null);
+  });
 }
 
 module.exports = AddressesController;

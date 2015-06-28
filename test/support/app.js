@@ -5,6 +5,6 @@ let connection = mongoose.createConnection('mongodb://localhost/sustainers-api-t
 let app = new App(connection)
 module.exports = app
 
-beforeEach(() => {
-  connection.db.dropDatabase()
+afterEach((done) => {
+  connection.db.dropDatabase(done)
 })
