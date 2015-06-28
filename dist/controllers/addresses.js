@@ -5,6 +5,7 @@ var _createClass = (function () { function defineProperties(target, props) { for
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 var AddressSchema = require('../schemas/address');
+var Message = require('bitcore-message');
 
 var AddressesController = (function () {
   function AddressesController(app) {
@@ -17,14 +18,15 @@ var AddressesController = (function () {
     key: 'create',
     value: function create(req, res) {
       var params = parseParams(req.body);
-
-      if (!params.address || !params.nonce || !params.signature) {
-        res.sendStatus(400);
-      } else {
-        var address = this.app.modelInstance('address', params);
-        address.save();
-        res.sendStatus(200);
+      if (!paramsValid(params)) {
+        return res.sendStatus(400);
       }
+      if (!signatureValid(params)) {
+        return res.sendStatus(401);
+      }
+
+      this.app.modelInstance('address', params).save();
+      res.sendStatus(200);
     }
   }], [{
     key: 'registerHandlers',
@@ -39,6 +41,14 @@ var AddressesController = (function () {
 
   return AddressesController;
 })();
+
+function signatureValid(params) {
+  return Message(params.nonce.toString()).verify(params.address, params.signature);
+}
+
+function paramsValid(params) {
+  return params.address && params.nonce && params.signature;
+}
 
 function parseParams(body) {
   return {

@@ -1,14 +1,25 @@
-/* global describe, it */
+/* global describe, it, beforeEach */
 
-const app = require('./support/app')
 const expect = require('chai').expect
 const request = require('supertest')
+const bitcore = require('bitcore')
+const Message = require('bitcore-message')
+
+const app = require('./support/app')
 
 describe('Add Address', ()=> {
+  let priv, nonce, signature, req
+
+  beforeEach(() => {
+    priv = new bitcore.PrivateKey()
+    nonce = 1435404524
+    signature = Message(nonce.toString()).sign(priv)
+    req = request(app.express).post('/addresses')
+  })
+
   it('saves an address to the database', (done) => {
-    request(app.express)
-      .post('/addresses')
-      .send({ address: '123', nonce: '1435404524', signature: 'abc' })
+    req.send({ address: priv.toAddress().toString(), nonce: nonce, signature: signature })
+      .expect(200)
       .end((e, res) => {
         app.model('address').count({}, (e, count)=> {
           expect(count).to.equal(1)
@@ -18,12 +29,15 @@ describe('Add Address', ()=> {
   })
 
   it('returns 400 if params are invalid', (done) => {
-    request(app.express)
-      .post('/addresses')
-      .expect(400, done)
+    req.expect(400, done)
   })
 
-  it('does nothing if signature is invalid')
+  it('returns 401 if signature is invalid', (done) => {
+    signature = Message('123').sign(priv)
+    req.send({ address: priv.toAddress().toString(), nonce: nonce, signature: signature })
+      .expect(401, done)
+  })
 
   it('requires nonce to be one greater than previous')
 })
+

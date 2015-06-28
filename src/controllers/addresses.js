@@ -1,4 +1,5 @@
 const AddressSchema = require('../schemas/address')
+const Message = require('bitcore-message')
 
 class AddressesController {
   constructor(app) {
@@ -15,15 +16,20 @@ class AddressesController {
 
   create(req, res) {
     let params = parseParams(req.body)
+    if (!paramsValid(params)) { return(res.sendStatus(400)) }
+    if (!signatureValid(params)) { return(res.sendStatus(401)) }
 
-    if (!params.address || !params.nonce || !params.signature) {
-      res.sendStatus(400)
-    } else {
-      let address = this.app.modelInstance('address', params)
-      address.save()
-      res.sendStatus(200)
-    }
+    this.app.modelInstance('address', params).save()
+    res.sendStatus(200)
   }
+}
+
+function signatureValid(params) {
+  return(Message(params.nonce.toString()).verify(params.address, params.signature))
+}
+
+function paramsValid(params) {
+  return(params.address && params.nonce && params.signature)
 }
 
 function parseParams(body) {
