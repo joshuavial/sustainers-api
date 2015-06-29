@@ -2,6 +2,7 @@ var gulp = require('gulp')
 var sourcemaps = require('gulp-sourcemaps')
 var babel = require('gulp-babel')
 var exec = require('child_process').exec
+var argv = require('yargs').argv
 
 var sourceFiles = 'src/**/*.js'
 var testFiles = 'test/**/*.js'
@@ -25,8 +26,17 @@ gulp.task('watch', function () {
   gulp.watch([sourceFiles, testFiles], ['build', 'test'])
 })
 
-gulp.task('test', function () {
-  exec('./node_modules/standard/bin/cmd.js ' + standardFiles + ' && mocha --compilers js:babel/register', function (err, stdout, stderr) {
+gulp.task('standard', function () {
+  exec('./node_modules/standard/bin/cmd.js ' + standardFiles, function (err, stdout, stderr) {
+    console.log(stdout)
+    if (err) {console.log(stderr)}
+  })
+})
+
+gulp.task('test', ['standard'], function () {
+  var files = 'test'
+  if (argv.file) { files = argv.file }
+  exec('mocha --compilers js:babel/register ' + files, function (err, stdout, stderr) {
     console.log(stdout)
     if (err) {console.log(stderr)}
   })
