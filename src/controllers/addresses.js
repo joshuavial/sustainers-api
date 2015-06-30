@@ -9,9 +9,9 @@ class AddressesController {
   static registerHandlers(route, app) {
     let controller = new AddressesController(app)
 
-    app.express.post(route, (req, res) => {
-      controller.create(req, res)
-    })
+    app.express.post(route, (req, res) => { controller.create(req, res) })
+    app.express.get(`${route}/:account`, (req, res) => { controller.get(req, res) })
+
   }
 
   create(req, res) {
@@ -23,6 +23,13 @@ class AddressesController {
       if(nonceInvalid) { return(res.sendStatus(401)) }
       this.app.modelInstance('address', params).save()
       res.sendStatus(200)
+    })
+  }
+
+  get (req, res) {
+    this.app.model('address').findOne({address: req.params.account}, (err, address) => {
+      if (!address) {return res.sendStatus(404)}
+      res.send({address: address.address})
     })
   }
 }
