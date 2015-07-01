@@ -6,6 +6,7 @@ const bitcore = require('bitcore')
 const Message = require('bitcore-message')
 
 const app = require('./support/app')
+app.startExpress()
 
 describe('Add Address', ()=> {
   let priv, nonce, signature, req

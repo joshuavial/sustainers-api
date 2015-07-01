@@ -5,6 +5,7 @@ const request = require('supertest')
 const expect = require('chai').expect
 
 const app = require('./support/app')
+app.startExpress()
 
 describe('Add Address', ()=> {
   let req
